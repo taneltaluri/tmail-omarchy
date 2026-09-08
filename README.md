@@ -50,6 +50,24 @@ omarchy-shell ipc call io.github.taneltaluri.tmail compose
 omarchy-shell ipc call io.github.taneltaluri.tmail refresh
 ```
 
+## Update / uninstall
+
+```bash
+omarchy plugin update io.github.taneltaluri.tmail    # pull the latest version
+omarchy plugin disable io.github.taneltaluri.tmail   # hide it from the bar
+omarchy plugin remove io.github.taneltaluri.tmail    # delete it completely
+```
+
+Removing the widget does not touch TMail itself (uninstall TMail with
+`sudo rm -rf /opt/tmail /usr/local/bin/tmail` or `pacman -R tmail-bin` if you used the PKGBUILD).
+
+## Dependencies & permissions
+
+- **curl** (in Omarchy by default) — used to talk to TMail's local API on `127.0.0.1`
+- **TMail ≥ 2.10** running on the same machine; the widget reads the API token from
+  `~/.config/TMail/settings.json` and never sends anything off the machine
+- No root, no network access beyond localhost, no extra packages
+
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE).
