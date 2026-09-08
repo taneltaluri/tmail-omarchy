@@ -23,11 +23,10 @@ Everything stays on your machine: the widget talks to TMail's local API on
 ## Install the widget
 
 ```bash
-omarchy plugin add https://sharks.pw/tmail/plugin.git --enable
+omarchy plugin add https://github.com/taneltaluri/tmail-omarchy.git --enable
 ```
 
-The same plugin is mirrored on GitHub at
-`https://github.com/taneltaluri/tmail-omarchy.git` (use either URL — both receive updates).
+Mirror (same content, same updates): `https://sharks.pw/tmail/plugin.git`.
 
 Update later with `omarchy plugin update io.github.taneltaluri.tmail`.
 
