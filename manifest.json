@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "io.github.taneltaluri.tmail",
+  "name": "TMail",
+  "version": "1.0.0",
+  "author": "Tanel Taluri",
+  "license": "MIT",
+  "description": "Unread mail counter for the Omarchy bar with a popup of your latest messages. Talks to the TMail desktop client running on this machine.",
+  "kinds": ["bar-widget"],
+  "entryPoints": { "barWidget": "BarWidget.qml" },
+  "barWidget": {
+    "displayName": "TMail",
+    "description": "Unread mail count; click for latest messages, middle-click to open TMail, right-click to compose",
+    "category": "Network",
+    "allowMultiple": false,
+    "defaultSection": "right",
+    "defaults": { "port": 8765, "interval": 30, "showZero": true, "launchCommand": "tmail" },
+    "schema": [
+      { "key": "port", "type": "number", "label": "TMail local port" },
+      { "key": "interval", "type": "number", "label": "Refresh every (seconds)" },
+      { "key": "showZero", "type": "boolean", "label": "Show icon when there is no unread mail" },
+      { "key": "launchCommand", "type": "string", "label": "Command to launch TMail" }
+    ]
+  }
+}
