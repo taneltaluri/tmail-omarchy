@@ -14,10 +14,14 @@ Everything stays on your machine: the widget talks to TMail's local API on
 
 ## Requirements
 
-1. TMail **2.10 or newer** installed and running (it lives in the tray):
+1. TMail **2.10 or newer** installed and running (it lives in the tray).
+   On Omarchy/Arch build it as a regular package from the published PKGBUILD:
    ```bash
-   curl -fsSL https://sharks.pw/tmail/dist/install-linux.sh | bash
+   mkdir -p ~/tmail-pkg && cd ~/tmail-pkg
+   curl -fsSLO https://sharks.pw/tmail/dist/arch/PKGBUILD
+   makepkg -si
    ```
+   Or download the AppImage from <https://sharks.pw/tmail/> and run it — no installation needed.
 2. In TMail → Settings → *AI access (MCP server)* must be enabled (it is by default).
 
 ## Install the widget
@@ -58,8 +62,8 @@ omarchy plugin disable io.github.taneltaluri.tmail   # hide it from the bar
 omarchy plugin remove io.github.taneltaluri.tmail    # delete it completely
 ```
 
-Removing the widget does not touch TMail itself (uninstall TMail with
-`sudo rm -rf /opt/tmail /usr/local/bin/tmail` or `pacman -R tmail-bin` if you used the PKGBUILD).
+Removing the widget does not touch TMail itself. TMail is uninstalled the same way it was
+installed: through your package manager (package name `tmail-bin`) or by deleting the AppImage.
 
 ## Dependencies & permissions
 
