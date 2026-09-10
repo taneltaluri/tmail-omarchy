@@ -1,6 +1,6 @@
 # Maintainer: Tanel Taluri
 pkgname=tmail-bin
-pkgver=2.11.2
+pkgver=2.12.0
 pkgrel=1
 pkgdesc="Apple Mail style email client with local AI (MCP) access"
 arch=('x86_64')
@@ -12,8 +12,8 @@ optdepends=('libayatana-appindicator: tray icon in waybar/Hyprland'
 provides=('tmail')
 conflicts=('tmail')
 options=('!strip')
-source=("https://sharks.pw/tmail/dist/TMail-2.11.2-linux-x64.tar.gz")
-sha256sums=('a11a343948d7f5aa9758432decade81586da1b800360afcbbfdd9cc1beafd837')
+source=("https://sharks.pw/tmail/dist/TMail-2.12.0-linux-x64.tar.gz")
+sha256sums=('66d8ed619034cdf4ff3517348d4cb4a6fbe6a94ef0a6d1b5946f14e4609894f1')
 
 package() {
   install -d "$pkgdir/opt/tmail"
