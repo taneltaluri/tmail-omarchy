@@ -12,6 +12,9 @@ import "Model.js" as Model
 // messages, middle click brings TMail to the front (or launches it), right
 // click opens a new message. Nothing leaves the machine: the token is read from
 // TMail's own settings file and every request goes to localhost.
+//
+// The token is never placed in a command line: curl reads it as a config file
+// from its stdin (`-K -`), so it is not visible through /proc or `ps`.
 BarWidget {
   id: root
   moduleName: "io.github.taneltaluri.tmail"
@@ -44,7 +47,15 @@ BarWidget {
 
   function refresh() {
     if (!token) { settingsFile.reload(); return }
-    if (!statusProc.running) statusProc.running = true
+    if (statusProc.running) return
+    statusProc.stdinEnabled = true
+    statusProc.running = true
+  }
+
+  // Feed the Authorization header to curl over stdin and close it (EOF) so curl proceeds.
+  function feedCurlConfig(proc) {
+    proc.write(Model.curlConfig(root.token))
+    proc.stdinEnabled = false
   }
 
   function launchOrFocus() {
@@ -67,8 +78,10 @@ BarWidget {
   property string pendingRpcBody: ""
   function rpc(tool, args) {
     if (!token) return
+    if (rpcProc.running) return
     pendingRpcBody = Model.rpcBody(tool, args)
-    if (!rpcProc.running) rpcProc.running = true
+    rpcProc.stdinEnabled = true
+    rpcProc.running = true
   }
 
   visible: label !== "" || !online
@@ -108,9 +121,10 @@ BarWidget {
 
   Process {
     id: statusProc
-    command: ["curl", "-fsS", "--max-time", "4",
-      "-H", "Authorization: Bearer " + root.token,
-      root.baseUrl + "?limit=8"]
+    // -K -  → header (with the token) comes from stdin, not from argv
+    command: ["curl", "-fsS", "--max-time", "4", "-K", "-", root.baseUrl + "?limit=8"]
+    stdinEnabled: true
+    onStarted: root.feedCurlConfig(statusProc)
     stdout: StdioCollector {
       waitForEnd: true
       onStreamFinished: {
@@ -132,11 +146,13 @@ BarWidget {
 
   Process {
     id: rpcProc
-    command: ["curl", "-fsS", "--max-time", "6",
-      "-H", "Authorization: Bearer " + root.token,
+    // The JSON body (tool name, mailbox, uid) is not secret; the token again goes via stdin.
+    command: ["curl", "-fsS", "--max-time", "6", "-K", "-",
       "-H", "Content-Type: application/json",
       "-X", "POST", "--data-binary", root.pendingRpcBody,
       root.baseUrl]
+    stdinEnabled: true
+    onStarted: root.feedCurlConfig(rpcProc)
     stdout: StdioCollector { waitForEnd: true }
     onExited: function(code) { if (code === 0) refreshSoon.restart() }
   }

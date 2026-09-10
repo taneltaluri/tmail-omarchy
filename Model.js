@@ -48,3 +48,10 @@ function barLabel(online, unread, showZero) {
 function rpcBody(tool, args) {
   return JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: tool, arguments: args || {} } })
 }
+
+// curl config fed over stdin (`curl -K -`) so the token never appears in a command line.
+// The token is hex, but quote defensively: curl config strings use backslash escapes.
+function curlConfig(token) {
+  var t = String(token || "").replace(/[\\"\r\n]/g, "")
+  return 'header = "Authorization: Bearer ' + t + '"\n'
+}

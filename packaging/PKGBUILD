@@ -1,0 +1,27 @@
+# Maintainer: Tanel Taluri
+pkgname=tmail-bin
+pkgver=2.11.2
+pkgrel=1
+pkgdesc="Apple Mail style email client with local AI (MCP) access"
+arch=('x86_64')
+url="https://sharks.pw/tmail/dist"
+license=('MIT')
+depends=('gtk3' 'nss' 'alsa-lib' 'libxss' 'libnotify' 'at-spi2-core' 'libxkbcommon' 'mesa')
+optdepends=('libayatana-appindicator: tray icon in waybar/Hyprland'
+            'gnome-keyring: encrypted password storage (safeStorage)')
+provides=('tmail')
+conflicts=('tmail')
+options=('!strip')
+source=("https://sharks.pw/tmail/dist/TMail-2.11.2-linux-x64.tar.gz")
+sha256sums=('a11a343948d7f5aa9758432decade81586da1b800360afcbbfdd9cc1beafd837')
+
+package() {
+  install -d "$pkgdir/opt/tmail"
+  cp -a "$srcdir/TMail-linux-x64/." "$pkgdir/opt/tmail/"
+  rm -f "$pkgdir/opt/tmail/install.sh"
+  chmod 4755 "$pkgdir/opt/tmail/chrome-sandbox"
+  install -Dm644 "$srcdir/TMail-linux-x64/tmail.desktop" "$pkgdir/usr/share/applications/tmail.desktop"
+  install -Dm644 "$srcdir/TMail-linux-x64/tmail.png" "$pkgdir/usr/share/icons/hicolor/256x256/apps/tmail.png"
+  install -d "$pkgdir/usr/bin"
+  ln -s /opt/tmail/tmail "$pkgdir/usr/bin/tmail"
+}
