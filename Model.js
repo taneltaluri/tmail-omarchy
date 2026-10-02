@@ -63,6 +63,24 @@ function filterLatest(messages, account) {
   })
 }
 
+function extractVerificationCode(text) {
+  var content = String(text || "").slice(0, 30000)
+  var patterns = [
+    /\b(?:verification|verify|security|authentication|auth|one[- ]time|login|confirmation|confirm)\s+(?:verification\s+|security\s+|login\s+)?(?:code|password|passcode|otp)\s*(?:is|:|=|-)?\s*([A-Z0-9]{4,8})\b/ig,
+    /\b(?:code|otp|passcode)\s*(?:is|:|=|-)\s*([A-Z0-9]{4,8})\b/ig,
+    /\b([A-Z0-9]{4,8})\s+(?:is\s+)?(?:your\s+)?(?:verification|security|one[- ]time|login)\s+(?:code|otp)\b/ig,
+    /\buse\s+([0-9]{4,8})\s+to\s+(?:verify|sign in|log in|confirm|authenticate)\b/ig
+  ]
+  for (var i = 0; i < patterns.length; i++) {
+    var match
+    while ((match = patterns[i].exec(content)) !== null) {
+      var code = String(match[1] || "").replace(/[- ]/g, "")
+      if (/\d/.test(code)) return code
+    }
+  }
+  return ""
+}
+
 function rpcBody(tool, args) {
   return JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: tool, arguments: args || {} } })
 }

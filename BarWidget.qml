@@ -39,6 +39,8 @@ BarWidget {
   property var undoAction: null
   property var pendingUndoAction: null
   property string pendingRpcTool: ""
+  property string hoveredMessageKey: ""
+  property string previewCode: ""
 
   readonly property string label: Model.barLabel(online, unread, showZero)
   readonly property var filteredLatest: Model.filterLatest(latest, selectedAccount)
@@ -115,6 +117,26 @@ BarWidget {
       uids: [Number(action.item.uid)],
       read: false
     })
+  }
+
+  function messageKey(item) {
+    if (!item) return ""
+    return String(item.account || "") + "\n" + String(item.mailbox || "") + "\n" + String(item.uid || "")
+  }
+
+  function hoverMessage(item, hovered) {
+    var key = messageKey(item)
+    if (!hovered) {
+      if (hoveredMessageKey === key) {
+        hoveredMessageKey = ""
+        previewCode = ""
+      }
+      return
+    }
+    if (hoveredMessageKey === key) return
+    hoveredMessageKey = key
+    previewCode = Model.extractVerificationCode(
+      String(item && item.subject || "") + "\n" + String(item && item.preview || ""))
   }
 
   // JSON-RPC tools/call against TMail's local server (same API local AI agents use)
@@ -524,6 +546,22 @@ BarWidget {
                 visible: text !== ""
               }
 
+              Text {
+                textFormat: Text.PlainText
+                text: {
+                  if (root.previewCode) return "Verification code: " + root.previewCode
+                  return "No verification code found in the preview"
+                }
+                color: root.previewCode
+                  ? Color.accent
+                  : Qt.darker(root.bar ? root.bar.foreground : Color.foreground, 1.4)
+                font.family: root.bar ? root.bar.fontFamily : Style.font.family
+                font.pixelSize: root.previewCode ? Style.font.subtitle : Style.font.caption
+                font.bold: root.previewCode !== ""
+                width: parent.width
+                visible: root.hoveredMessageKey === root.messageKey(messageRow.modelData)
+              }
+
               Row {
                 width: parent.width
                 spacing: Style.space(4)
@@ -566,7 +604,12 @@ BarWidget {
               }
             }
 
-            HoverHandler { id: rowHover }
+            HoverHandler {
+              id: rowHover
+              onHoveredChanged: {
+                root.hoverMessage(messageRow.modelData, hovered)
+              }
+            }
           }
         }
       }
