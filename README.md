@@ -4,10 +4,16 @@ Unread-mail widget for the [Omarchy](https://omarchy.org) bar, powered by the
 [TMail](https://sharks.pw/tmail/) desktop mail client.
 
 - **Bar:** envelope icon with your unread count (all accounts)
-- **Left click:** popup with the latest unread messages — click one to open it in TMail
+- **Left click:** popup with the latest unread messages, each labelled with its account — filter the list by account or show all
+- **Hover:** highlight a likely verification code found in the message subject or preview without opening or marking the message read
+- **Per-message actions:** mark a message as read or move it to Trash
+- **Undo:** restore a message to unread for 10 seconds after *Mark read*
 - **Middle click:** bring TMail to the front (launches it if it is not running)
 - **Right click:** new message
-- Buttons in the popup: *Open TMail*, *New message*, *Refresh*
+- Buttons in the popup: per-message *Mark read* and *Delete* (moves to Trash), plus *Open TMail*, *New message*, and *Refresh*.
+
+Delete is recoverable from TMail's Trash folder. TMail's local API does not return the destination message ID after moving it, so the widget cannot safely provide one-click Undo for Delete.
+Code detection uses only the subject and short preview already shown by TMail; it does not fetch the full message or change its read status.
 
 Everything stays on your machine: the widget talks to TMail's local API on
 `127.0.0.1` using the token TMail stores in `~/.config/TMail/settings.json`.
