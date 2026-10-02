@@ -45,8 +45,44 @@ function barLabel(online, unread, showZero) {
   return showZero ? "󰇮" : ""
 }
 
+function accountLabel(accounts, account) {
+  var id = String(account || "")
+  for (var i = 0; i < accounts.length; i++) {
+    var item = accounts[i]
+    if (item && (String(item.email || "") === id || String(item.id || "") === id)) {
+      return String(item.email || item.name || id)
+    }
+  }
+  return id || "Unknown account"
+}
+
+function filterLatest(messages, account) {
+  if (!account) return messages
+  return messages.filter(function(item) {
+    return item && String(item.account || "") === String(account)
+  })
+}
+
 function rpcBody(tool, args) {
   return JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: tool, arguments: args || {} } })
+}
+
+function rpcErrorMessage(raw) {
+  try {
+    var response = JSON.parse(raw)
+    if (response.error) return String(response.error.message || "TMail rejected the action.")
+    var result = response.result
+    if (result && result.isError) {
+      var content = Array.isArray(result.content) ? result.content : []
+      for (var i = 0; i < content.length; i++) {
+        if (content[i] && content[i].text) return String(content[i].text)
+      }
+      return "TMail rejected the action."
+    }
+    return ""
+  } catch (e) {
+    return "TMail returned an unreadable response."
+  }
 }
 
 // curl config fed over stdin (`curl -K -`) so the token never appears in a command line.

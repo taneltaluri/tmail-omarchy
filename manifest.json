@@ -14,7 +14,7 @@
   },
   "barWidget": {
     "displayName": "TMail",
-    "description": "Unread mail count; click for latest messages, middle-click to open TMail, right-click to compose",
+    "description": "Unread count and recent messages by account, with quick mark-read and move-to-Trash actions",
     "category": "Network",
     "allowMultiple": false,
     "defaultSection": "right",
